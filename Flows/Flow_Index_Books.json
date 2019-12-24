@@ -1,0 +1,475 @@
+{
+	"info": {
+		"_postman_id": "632a6d2f-f4ab-4c87-9719-431f2598107c",
+		"name": "Flow_Index_Books",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "254982d5-5697-4252-9fb9-a97cdc5d75ef",
+						"exec": [
+							"pm.test(\"Payload must be valid and have a body\", () => {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    pm.response.to.be.json;",
+							"});",
+							" ",
+							"pm.test(\"ontent-Type is present\", () => {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"let jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Check atributes of json user\", () => {",
+							"    pm.expect(jsonData.data.email).to.equal(request.data.email.toLowerCase());",
+							"    pm.expect(jsonData.data.first_name).to.equal(request.data.first_name);",
+							"    pm.expect(jsonData.data.last_name).to.equal(request.data.last_name);",
+							"    pm.expect(jsonData.data.locale).to.equal(request.data.locale);",
+							"});",
+							"",
+							"pm.environment.set(\"PASSWORD\", request.data.password)",
+							"pm.environment.set(\"FIRST_NAME\", request.data.first_name);",
+							"pm.environment.set(\"LAST_NAME\", request.data.last_name);",
+							"pm.environment.set(\"EMAIL_USER\", request.data.email.toLowerCase());",
+							"pm.environment.set(\"LOCALE_USER\", request.data.locale);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5ba1b92e-649a-44f3-80ad-8a0a610ee2b8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "first_name",
+							"value": "{{$randomFirstName}}",
+							"type": "text"
+						},
+						{
+							"key": "last_name",
+							"value": "{{$randomLastName}}",
+							"type": "text"
+						},
+						{
+							"key": "locale",
+							"value": "en",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "{{$randomEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{$randomPassword}}",
+							"type": "text"
+						},
+						{
+							"key": "password_confirmation",
+							"value": "{{PASSWORD}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}/auth/",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"auth",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign in",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "db497c5f-e728-4758-ae42-1f91e7e24446",
+						"exec": [
+							"pm.test(\"Payload must be valid and have a body\", () => {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", () => {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"",
+							"let jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Check atributes of json user login\", () => {",
+							"    pm.expect(jsonData.data.email).to.equal(pm.environment.get(\"EMAIL_USER\"));",
+							"    pm.expect(jsonData.data.first_name).to.equal(pm.environment.get(\"FIRST_NAME\"));",
+							"    pm.expect(jsonData.data.last_name).to.equal(pm.environment.get(\"LAST_NAME\"));",
+							"    pm.expect(jsonData.data.locale).to.equal(pm.environment.get(\"LOCALE_USER\"));",
+							"});",
+							"",
+							"pm.environment.set(\"ACCESS_TOKEN\",postman.getResponseHeader(\"access-token\"));",
+							"pm.environment.set(\"CLIENT\",postman.getResponseHeader(\"client\"));",
+							"pm.environment.set(\"UID\",postman.getResponseHeader(\"uid\"));",
+							"pm.environment.set(\"EXPIRE\",postman.getResponseHeader(\"expiry\"));",
+							"pm.environment.set(\"ID_USER\", jsonData.data.id);",
+							"",
+							"//Liberacion de variables",
+							"pm.environment.unset(\"FIRST_NAME\");",
+							"pm.environment.unset(\"LAST_NAME\");",
+							"pm.environment.unset(\"LOCALE_USER\");",
+							"pm.environment.unset(\"EMAIL_USER\");",
+							"pm.environment.unset(\"PASSWORD\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "email",
+						"type": "text",
+						"value": "alex@hotmail.com",
+						"disabled": true
+					},
+					{
+						"key": "first_name",
+						"type": "text",
+						"value": "Alex",
+						"disabled": true
+					},
+					{
+						"key": "last_name",
+						"type": "text",
+						"value": "Falcon",
+						"disabled": true
+					},
+					{
+						"key": "password",
+						"type": "text",
+						"value": "123456789",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "{{EMAIL_USER}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{PASSWORD}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}/auth/sign_in",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"auth",
+						"sign_in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a25e892e-daad-4e3a-8333-8cfe80f5d8ed",
+						"exec": [
+							"pm.test(\"Payload must be valid and have a body\", () => {",
+							"    pm.response.to.have.status(201);",
+							"    pm.response.to.be.withBody;",
+							"    pm.response.to.be.json;",
+							"});",
+							" ",
+							"pm.test(\"Content-Type is present\", () => {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"let jsonData = pm.response.json();",
+							"pm.test(\"Check atributes of json book\", () => {",
+							"    pm.expect(jsonData.gender).to.equal(pm.environment.get(\"GENDER\"));",
+							"    pm.expect(jsonData.author).to.equal(request.data.author);",
+							"    pm.expect(jsonData.image).to.equal(request.data.image);",
+							"    pm.expect(jsonData.title).to.equal(request.data.title);",
+							"    pm.expect(jsonData.editor).to.equal(request.data.editor);",
+							"    pm.expect(jsonData.year).to.equal(request.data.year);",
+							"});",
+							"",
+							"pm.environment.set(\"ID_BOOK\", JSON.parse(responseBody).id);",
+							"",
+							"//Liberacion de variables",
+							"pm.environment.unset(\"GENDER\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cdff536b-bac6-4ae1-9236-b10d0e3ef3b6",
+						"exec": [
+							"pm.environment.set(\"GENDER\", Math.random().toString(20).substring(2, 20));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "access-token",
+						"value": "{{ACCESS_TOKEN}}",
+						"type": "text"
+					},
+					{
+						"key": "client",
+						"value": "{{CLIENT}}",
+						"type": "text"
+					},
+					{
+						"key": "expire",
+						"value": "{{EXPIRE}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					},
+					{
+						"key": "uid",
+						"value": "{{UID}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "gender",
+							"value": "{{GENDER}}",
+							"type": "text"
+						},
+						{
+							"key": "author",
+							"value": "{{$randomFullName}}",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"value": "{{$randomImageUrl}}",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "{{$randomCity}}",
+							"type": "text"
+						},
+						{
+							"key": "editor",
+							"value": "{{$randomCompanyName}}",
+							"type": "text"
+						},
+						{
+							"key": "year",
+							"value": "{{$randomDatePast}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}/api/v1/book",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Index Book",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ae407bfe-89d2-485a-9ca6-50a0c19df519",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "35cd3f66-1161-4d2f-8ef9-a1a7fb40bb13",
+						"exec": [
+							"pm.test(\"Payload must be valid and have a body\", () => {",
+							"        pm.response.to.be.ok;",
+							"        pm.response.to.be.withBody;",
+							"        pm.response.to.be.json;",
+							"});",
+							" ",
+							"pm.test(\"Content-Type is present\", () => {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"let jsonData = pm.response.json();",
+							"pm.test(\"Response content\", () => {",
+							"    pm.expect( jsonData.page[0].id).not.to.equal(null);",
+							"    pm.expect( jsonData.page[0].gender).not.to.equal(null);",
+							"    pm.expect( jsonData.page[0].author).not.to.equal(null);",
+							"    pm.expect( jsonData.page[0].image).not.to.equal(null);",
+							"    pm.expect( jsonData.page[0].title).not.to.equal(null);",
+							"    pm.expect( jsonData.page[0].editor).not.to.equal(null);",
+							"    pm.expect( jsonData.page[0].year).not.to.equal(null);",
+							"    ",
+							"    //Types",
+							"    pm.expect( jsonData.page).to.be.an('array');",
+							"    pm.expect( jsonData.page[0].id).to.be.an('number');",
+							"    pm.expect( jsonData.page[0].gender).to.be.an('String');",
+							"    pm.expect( jsonData.page[0].author).to.be.an('String');",
+							"    pm.expect( jsonData.page[0].image).to.be.an('String');",
+							"    pm.expect( jsonData.page[0].title).to.be.an('String');",
+							"    pm.expect( jsonData.page[0].editor).to.be.an('String');",
+							"    pm.expect( jsonData.page[0].year).to.be.an('String');",
+							"})",
+							"//Liberacion de variables",
+							"pm.environment.unset(\"ACCESS_TOKEN\");",
+							"pm.environment.unset(\"CLIENT\");",
+							"pm.environment.unset(\"UID\");",
+							"pm.environment.unset(\"EXPIRE\");",
+							"pm.environment.unset(\"ID_USER\");",
+							"pm.environment.unset(\"ID_BOOK\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "123456789",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "alex@hotmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "access-token",
+						"value": "{{ACCESS_TOKEN}}",
+						"type": "text"
+					},
+					{
+						"key": "client",
+						"value": "{{CLIENT}}",
+						"type": "text"
+					},
+					{
+						"key": "expire",
+						"value": "{{EXPIRE}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					},
+					{
+						"key": "uid",
+						"value": "{{UID}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{HOST}}/api/v1/book",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"book"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
